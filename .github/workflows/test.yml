@@ -5,6 +5,9 @@ jobs:
   run-test:
     name: Running test
     runs-on: ubuntu-latest
+    env:
+      USER_TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+      USER_TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
     steps:
       # ...
       - uses: actions/checkout@v4
@@ -12,4 +15,5 @@ jobs:
 
       # run any `bun` or `bunx` command
       - run: bun install
+
       - run: bun run test
