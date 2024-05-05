@@ -1,5 +1,7 @@
+import axios from "axios";
 import * as cheerio from "cheerio";
 import AuthenticationSession from "./AuthenticationSession";
+
 const DEFAULT_ENDPOINT = "https://edusoftweb.hcmiu.edu.vn/default.aspx";
 
 const FIELD_USERNAME_KEY = `ctl00$ContentPlaceHolder1$ctl00$ucDangNhap$txtTaiKhoa`;
@@ -7,11 +9,15 @@ const FIELD_PASSWORD_KEY = `ctl00$ContentPlaceHolder1$ctl00$ucDangNhap$txtMatKha
 const ERROR_ATTRIBUTE_ID = `ContentPlaceHolder1_ctl00_ucDangNhap_lblError`;
 
 export async function fetchPreloadLoginData() {
-  const response = await fetch(DEFAULT_ENDPOINT, { method: "GET" });
+  const response = await axios(DEFAULT_ENDPOINT, { method: "GET" });
+  const setCookies = response.headers["set-cookie"];
+
+  if (setCookies === undefined)
+    throw new Error(`Set cookie cannot be found. Something is wrong.`);
 
   return {
-    cookies: response.headers.getSetCookie(),
-    body: await response.text(),
+    cookies: setCookies,
+    body: await response.data,
   };
 }
 
@@ -83,16 +89,15 @@ export async function doLoginWithPreloadedData(
   formData.delete("ctl00$ContentPlaceHolder1$ctl00$MessageBox1$imgCloseButton");
   formData.delete("ctl00$ContentPlaceHolder1$ctl00$MessageBox1$btnOk");
 
-  const headers = new Headers({});
-  headers.append("Cookie", `ASP.NET_SessionId=${sessionId}`);
-
-  const response = await fetch(DEFAULT_ENDPOINT, {
+  const response = await axios(DEFAULT_ENDPOINT, {
     method: "POST",
-    body: formData,
-    headers: headers,
+    data: formData,
+    headers: {
+      Cookie: `ASP.NET_SessionId=${sessionId}`,
+    },
   });
 
-  const outputHtml = await response.text();
+  const outputHtml = await response.data;
   const selector1 = cheerio.load(outputHtml);
   const errText = selector1(`#${ERROR_ATTRIBUTE_ID}`).text();
 

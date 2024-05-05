@@ -18,6 +18,5 @@ test(`[object] should create a fetcher that can fetch`, async () => {
   const fetchResult = (await createAndLoginClient())
     .getFetcher()
     .createFetch("https://edusoftweb.hcmiu.edu.vn/default.aspx?page=gioithieu");
-  expect(await (await fetchResult).text()).not.toBeUndefined();
+  expect(await (await fetchResult).data).not.toBeUndefined();
 });
-

@@ -30,7 +30,7 @@ export class ExamSchedule {
       .getFetcher()
       .createFetch(URL_MIDTERM_ENDPOINT);
 
-    const $ = cheerio.load(await (await schedules).text());
+    const $ = cheerio.load(await (await schedules).data);
     const tds = $("table#ContentPlaceHolder1_ctl00_gvXem tr td ").text();
 
     return tds

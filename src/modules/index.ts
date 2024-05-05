@@ -28,7 +28,6 @@ export default class Edusoft {
   }
 
   public getExamSchedule() {
-
     let examSchedule;
 
     examSchedule =

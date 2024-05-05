@@ -1,13 +1,17 @@
+import type { AxiosInstance, AxiosRequestConfig } from "axios";
+import axios from "axios";
 import type Edusoft from "..";
 
 export default class Fetcher {
   private edusoft: Edusoft;
+  private axiosInstance: AxiosInstance;
 
   constructor(edusoft: Edusoft) {
     this.edusoft = edusoft;
+    this.axiosInstance = axios.create();
   }
 
-  public createFetch(req: string | URL | Request, init?: RequestInit) {
+  public createFetch(url: string, config?: AxiosRequestConfig<any>) {
     // Check if the client is logged in.
     const currentAuth = this.edusoft.getAuthentication();
     if (!currentAuth.isLogged())
@@ -17,15 +21,17 @@ export default class Fetcher {
 
     // Set a session id into header token
     const sessionId = currentAuth.getSession()?.sessionId;
-    const headers = new Headers(init?.headers);
 
-    headers.set("Cookie", `ASP.NET_SessionId=${sessionId}`);
+    this.axiosInstance.interceptors.request.use(
+      function (config) {
+        config.headers.Cookie = `ASP.NET_SessionId=${sessionId}`;
+        return config;
+      },
+      function (error) {
+        return Promise.reject(error);
+      }
+    );
 
-    const c: RequestInit = {
-      ...init,
-      headers: headers,
-    };
-
-    return fetch(req, c);
+    return this.axiosInstance(url, config);
   }
 }
