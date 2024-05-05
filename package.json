@@ -2,8 +2,24 @@
   "name": "betteredu-framework",
   "module": "src/index.ts",
   "type": "module",
+  "author": {
+    "email": "daudaua3782@gmail.com",
+    "name": "PlayerNguyen"
+  },
+  "repository": {
+    "url": "https://github.com/PlayerNguyen/betteredusoft-framework"
+  },
   "scripts": {
-    "test": "bun test"
+    "test": "bun test",
+    "build": " bun build ./src/index.ts --target=node --outdir=dist",
+    "prepack": "npmignore --auto"
+  },
+  "publishConfig": {
+    "ignore": [
+      "!build/",
+      "src/",
+      "test/"
+    ]
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -14,6 +30,7 @@
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
-    "dayjs": "^1.11.11"
+    "dayjs": "^1.11.11",
+    "npmignore": "^0.3.1"
   }
 }

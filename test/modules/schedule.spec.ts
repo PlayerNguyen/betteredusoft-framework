@@ -7,5 +7,6 @@ describe("[schedule]", () => {
     const output = await edusoft.getExamSchedule().getMidterm();
 
     expect(output).not.toBeUndefined();
+    expect(output).toBeInstanceOf(Array);
   });
 });

@@ -7,6 +7,17 @@ dayjs.extend(customParseFormat);
 
 const URL_MIDTERM_ENDPOINT = `https://edusoftweb.hcmiu.edu.vn/Default.aspx?page=xemlichthigk`;
 
+export type ExamItem = {
+  index: number;
+  courseCode: string;
+  courseName: string;
+  merge: string;
+  totalStudents: number;
+  date: Date;
+  room: string;
+  type: string;
+};
+
 export class ExamSchedule {
   private edusoft: Edusoft;
 
@@ -14,7 +25,7 @@ export class ExamSchedule {
     this.edusoft = edusoft;
   }
 
-  public async getMidterm() {
+  public async getMidterm(): Promise<ExamItem[]> {
     const schedules = this.edusoft
       .getFetcher()
       .createFetch(URL_MIDTERM_ENDPOINT);
@@ -40,11 +51,11 @@ export class ExamSchedule {
       }, [])
       .map((row) => {
         return {
-          index: row[0],
+          index: Number(row[0]),
           courseCode: row[1],
           courseName: row[2],
           merge: row[3],
-          totalStudents: row[5],
+          totalStudents: Number(row[5]),
           date: dayjs(row[6] + " " + row[7], "DD/MM/YYYY HH:mm").toDate(),
           room: row[8],
           type: row[9],
