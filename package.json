@@ -1,6 +1,7 @@
 {
   "name": "betteredu-framework",
   "module": "src/index.ts",
+  "version": "0.0.2",
   "type": "module",
   "author": {
     "email": "daudaua3782@gmail.com",
